@@ -2,94 +2,57 @@
 
 This file tracks known issues and bugs in the YourPost Webmail frontend.
 
-## Authentication & Authorization
+## Completed
 
-### 1. Missing Registration Endpoint
-- **Status**: Open
+### 1. JWT Auth Integration ✅
+- **Location**: `src/lib/auth.ts`, `src/lib/api.ts`, `src/components/LoginPage.tsx`
+- **Implementation**:
+  - `getUserRole()` decodes JWT payload via base64url to extract `role` claim
+  - `setAuthCookies()` / `clearAuthCookies()` helpers consolidate cookie management
+  - All API calls pass `Authorization: Bearer <token>` header via `authHeaders()`
+  - Login stores token in cookie; role is read directly from the JWT on each page load
+
+### 2. Registration Endpoint ✅
 - **Location**: `src/lib/api.ts`
-- **Description**: The webmail calls `POST /api/v1/register` but the YourPost API uses `POST /api/v1/users` for user creation.
-- **Note**: Registration should be for domain owners (admin privilege) to create new email users, not public signup.
-- **Fix Needed**: 
-  - Option A: Update webmail to use `POST /api/v1/users` with admin token
-  - Option B: Add `POST /api/v1/auth/register` endpoint to YourPost API
+- **Description**: `register()` calls `POST /api/v1/users` (admin-only); first user gets `role: admin`.
 
-### 2. Token Validation Not Implemented
+### 3. RBAC UI ✅
+- **Location**: `src/lib/auth.ts`, `src/app/(app)/admin/page.tsx`
+- **Description**: `isAdmin()` gates admin page; non-admins are redirected to `/inbox`.
+
+### 4. Admin Panel ✅
+- **Location**: `src/app/(app)/admin/page.tsx`
+- **Features**:
+  - List users with role badge, quota, and active status
+  - Create user form (email, password, role selector)
+  - Deactivate / Reactivate buttons
+
+### 5. Missing API Functions ✅
+- **Location**: `src/lib/api.ts`
+- **Added**: `sendMessage`, `deleteMessage`, `updateUser`, `deactivateUser`
+
+### 6. Theme Toggle / Public Homepage / Layout ✅
+- Separated public and authenticated layouts; theme-aware SVG logo.
+
+## Open Items
+
+### 7. Token Refresh
 - **Status**: Open
-- **Location**: `src/components/WebmailApp.tsx`
-- **Description**: The webmail reads tokens from cookies but YourPost API doesn't validate tokens yet.
-- **Impact**: Any valid token (even expired) is accepted.
-- **Fix Needed**: Implement JWT or session-based authentication in YourPost API.
+- **Description**: Tokens expire after 24h; there is no silent refresh. User must re-login.
+- **Fix Needed**: Detect 401 responses in `api.ts` and redirect to `/login`.
 
-## UI/UX Issues
+### 8. Send Email UI
+- **Status**: Open
+- **Description**: `sendMessage` API function exists but no compose UI in the webmail.
+- **Fix Needed**: Add compose modal or page at `(app)/compose`.
 
-### 3. Theme Toggle Not Working in Header
-- **Status**: Fixed
-- **Description**: Header now uses SVG strings with theme-based switching (light=outlined, dark=filled).
+### 9. Unread Count / Badge
+- **Status**: Open
+- **Description**: `Message.seen` is returned by the API but not shown in the folder list.
 
-### 4. Public Homepage Needs Branding
-- **Status**: Completed
-- **Location**: `src/app/(public)/page.tsx`
-- **Description**: Added public branding page at `/` with:
-  - YourPost hero SVG
-  - "Open Source" and "SaaS Available" badges
-  - Links to GitHub, Sign In, Sign Up
-  - Theme toggle
-
-### 5. Layout Separation Needed
-- **Status**: Completed
-- **Description**: Separated root layout (public) from app layout (authenticated):
-  - `/` - Public branding page
-  - `/login` - Login page
-  - `/register` - Registration page
-  - `/inbox` - Mailbox (after login, like Gmail)
-
-## API Compatibility
-
-### 6. API Endpoints Needed
-- **Status**: In Progress
-- **Description**: The webmail expects these endpoints:
-  - `GET /api/v1/mailboxes/{user}/folders` ✅
-  - `GET /api/v1/mailboxes/{user}/messages?folder_id={id}` ✅
-  - `GET /api/v1/mailboxes/{user}/messages/{id}` ✅
-  - `POST /api/v1/mailboxes/{user}/send` ✅
-  - `DELETE /api/v1/mailboxes/{user}/messages/{id}` ✅
-  - `POST /api/v1/auth` ✅ (login)
-  - `POST /api/v1/users` ✅ (create user - admin only)
-  - `POST /api/v1/auth/register` ❌ (missing - needed for public registration)
-
-## RBAC (Role-Based Access Control)
-
-### 7. Role Support Needed
-- **Status**: In Progress
-- **Location**: YourPost API (`src/db/global.zig`)
-- **Description**: Added `role` field to users table but need to:
-  - Validate roles in API endpoints
-  - Show/hide admin features in webmail based on user role
-  - Add admin panel for user management
-
-## Admin UI/UX (Webmail)
-
-### 8. Admin Panel Needed
-- **Status**: Not Started
-- **Location**: `yourpost-webmail/src/app/(app)/admin/`
-- **Description**: Need admin interface for:
-  - List all users (with roles, quota, status)
-  - Create new users (with role assignment)
-  - Edit user quota and status (active/inactive)
-  - Delete/deactivate users
-- **API Endpoints Needed**:
-  - `GET /api/v1/users` - List all users (admin only)
-  - `POST /api/v1/users` - Create user with role (admin only)
-  - `PUT /api/v1/users/{email}` - Update user (admin only)
-  - `DELETE /api/v1/users/{email}` - Deactivate user (admin only)
-
-### 9. Role-Based UI Rendering
-- **Status**: Not Started
-- **Description**: Webmail should:
-  - Hide admin features from regular users
-  - Show "Admin" link in header for admin users
-  - Redirect non-admin users from admin pages
-- **Implementation**: Check user role from token claims
+### 10. Forgot Password
+- **Status**: Open
+- **Description**: `/forgot-password` page exists but has no backend endpoint.
 
 ---
 

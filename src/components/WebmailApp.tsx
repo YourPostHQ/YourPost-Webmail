@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { getFolders, getMessages, getMessage, Folder, Message, MessageDetail } from '@/lib/api'
-import { getToken, getEmail } from '@/lib/auth'
+import { getEmail, clearAuthCookies } from '@/lib/auth'
 
 export default function WebmailApp() {
   const [folders, setFolders] = useState<Folder[]>([])
@@ -13,6 +13,7 @@ export default function WebmailApp() {
   const [loading, setLoading] = useState(true)
   const [email, setEmail] = useState<string>('')
   const router = useRouter()
+  const pathname = usePathname()
 
   // Get email from cookie on mount
   useEffect(() => {
@@ -65,8 +66,7 @@ export default function WebmailApp() {
   }
 
   function handleLogout() {
-    document.cookie = 'yourpost-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
-    document.cookie = 'yourpost-email=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+    clearAuthCookies()
     router.push('/')
   }
 

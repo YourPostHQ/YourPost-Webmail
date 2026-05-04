@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { useTheme } from '@/components/ThemeProvider'
 import { login } from '@/lib/api'
+import { setAuthCookies } from '@/lib/auth'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -33,8 +34,7 @@ export default function LoginPage() {
     try {
       const data = await login(email, password)
       const maxAge = rememberMe ? 2592000 : 86400 // 30 days if remember me, else 1 day
-      document.cookie = `yourpost-token=${data.token}; path=/; max-age=${maxAge}`
-      document.cookie = `yourpost-email=${encodeURIComponent(data.email)}; path=/; max-age=${maxAge}`
+      setAuthCookies(data.token, data.email, maxAge)
       router.push('/inbox')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed')
