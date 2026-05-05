@@ -8,6 +8,18 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC.svg)](https://tailwindcss.com)
 [![Tauri](https://img.shields.io/badge/Tauri-1.0-orange.svg)](https://tauri.app)
 
+## 🌐 Domain Structure
+
+- **yourpost.io** - Open source code and documentation
+  - [GitHub Organization](https://github.com/YourPostHQ)
+  - [Documentation](https://yourpost.io/docs)
+  
+- **yourpost.app** - Production deployment instance
+  - Mail server backend (Zig)
+  - API services
+  - Web app frontend (this repo)
+  - Admin dashboard
+
 ## ✨ Features
 
 - **Modern Email UI** - Clean, responsive email interface
@@ -190,9 +202,11 @@ NODE_VERSION = "18"
 directory = "out"
 
 [[routes]]
-pattern = "webmail.yourpost.io"
-zone_name = "yourpost.io"
+pattern = "yourpost.app"
+zone_name = "yourpost.app"
 ```
+
+**Production URL**: https://yourpost.app
 
 ### Tauri Desktop App (Coming Soon)
 

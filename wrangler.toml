@@ -11,5 +11,5 @@ NODE_VERSION = "18"
 directory = "out"
 
 [[routes]]
-pattern = "webmail.yourpost.io"
-zone_name = "yourpost.io"
+pattern = "yourpost.app"
+zone_name = "yourpost.app"
