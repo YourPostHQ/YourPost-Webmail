@@ -77,7 +77,7 @@ export default function RegisterPage() {
 
       {/* Form */}
       <div className="flex-1 flex items-center justify-center px-4 py-12">
-        <div className="w-full max-w-sm bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm p-8">
+        <div className="w-full max-w-md bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm p-8">
           <div className="mb-8">
             <h1 className="text-2xl font-bold text-zinc-900 dark:text-white mb-1">Register your domain</h1>
             <p className="text-sm text-zinc-500 dark:text-zinc-400">You'll be the admin for this domain</p>
