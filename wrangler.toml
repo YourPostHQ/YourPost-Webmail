@@ -9,4 +9,4 @@ NODE_VERSION = "18"
 NEXT_PUBLIC_API_URL = "https://api.yourpost.app"
 
 [assets]
-directory = "out"
+directory = ".next"
